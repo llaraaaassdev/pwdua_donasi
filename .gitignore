@@ -1,0 +1,22 @@
+# Environment
+.env
+
+# Composer
+/vendor/
+
+# CodeIgniter writable
+/writable/cache/
+/writable/debugbar/
+/writable/logs/
+/writable/session/
+/writable/uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Node
+node_modules/

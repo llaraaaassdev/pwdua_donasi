@@ -258,31 +258,52 @@
             <p class="register-sub">
                 Silakan daftar untuk melanjutkan
             </p>
+<?php if(session()->getFlashdata('errors')) : ?>
 
-            <form action="/register" method="post">
+<div class="alert alert-danger">
+
+<ul class="mb-0">
+
+<?php foreach(session()->getFlashdata('errors') as $error): ?>
+
+<li><?= esc($error) ?></li>
+
+<?php endforeach; ?>
+
+</ul>
+
+</div>
+
+<?php endif; ?>
+            <form action="<?= base_url('register') ?>" method="post">
+
+                <?= csrf_field() ?>
 
                 <div class="mb-3">
                     <label>Nama</label>
-                    <input type="text"
-                    name="nama"
-                    class="form-control"
-                    placeholder="Masukkan nama">
+                    <input
+                        type="text"
+                        name="nama"
+                        class="form-control"
+                        required>
                 </div>
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email"
-                    name="email"
-                    class="form-control"
-                    placeholder="Masukkan email">
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        required>
                 </div>
 
                 <div class="mb-4">
                     <label>Password</label>
-                    <input type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Masukkan password">
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        required>
                 </div>
 
                 <button class="btn btn-register w-100">
@@ -293,7 +314,7 @@
 
             <div class="bottom-text">
                 Sudah punya akun?
-                <a href="/login">Login</a>
+                <a href="<?= base_url('/') ?>">Login</a>
             </div>
 
         </div>

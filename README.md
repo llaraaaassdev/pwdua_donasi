@@ -1,4 +1,11 @@
 # CodeIgniter 4 Framework
+<!-- ##USER
+#--------------------------------------------------------------------
+# | Role    | Email                                           | Password   |
+# | ------- | ----------------------------------------------- | ---------- |
+# | Admin   | [admin@donasi.com](mailto:admin@donasi.com)     | admin123   |
+# | Yayasan | [yayasan@donasi.com](mailto:yayasan@donasi.com) | yayasan123 |
+# | Donatur | [donatur@donasi.com](mailto:donatur@donasi.com) | donatur123 | -->
 
 ## What is CodeIgniter?
 

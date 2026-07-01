@@ -259,20 +259,42 @@
                 Silakan login untuk melanjutkan
             </p>
 
-            <form action="" method="post">
+            <!-- //Notifikasi sukses dan berhasil// -->
+                <?php if(session()->getFlashdata('success')) : ?>
+                <div class="alert alert-success">
+                <?= session()->getFlashdata('success') ?>
+                </div>
 
+                <?php endif; ?>
+
+                <?php if(session()->getFlashdata('error')) : ?>
+                <div class="alert alert-danger">
+                <?= session()->getFlashdata('error') ?>
+                </div>
+
+                <?php endif; ?>
+
+                
+            <form action="<?= base_url('login') ?>" method="post">
+                <?= csrf_field() ?>
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="text"
-                    class="form-control"
-                    placeholder="Masukkan email">
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Masukkan email"
+                        required>
                 </div>
 
                 <div class="mb-4">
                     <label>Password</label>
-                    <input type="password"
-                    class="form-control"
-                    placeholder="Masukkan password">
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Masukkan password"
+                        required>
                 </div>
 
                 <button class="btn btn-login w-100">
@@ -283,7 +305,7 @@
 
             <div class="bottom-text">
                 Belum punya akun?
-                <a href="">Daftar</a>
+                <a href="<?= base_url('/register') ?>">Daftar</a>
             </div>
 
         </div>

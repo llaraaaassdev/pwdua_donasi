@@ -6,14 +6,32 @@ use CodeIgniter\Config\Services;
 
 $routes = Services::routes();
 
-$routes->get('/', fn() => redirect()->to('/login'));
 
-$routes->get('/login', 'Auth::login');
-$routes->post('/login', 'Auth::process');
+// Authentication
 
-$routes->get('/register', 'Auth::register');
-$routes->post('/register', 'Auth::processRegister');
+$routes->get('/login', 'AuthController::login');
 
-$routes->get('/logout', 'Auth::logout');
+$routes->post('/login', 'AuthController::loginProcess');
 
-$routes->get('/dashboard', 'Dashboard::index');
+$routes->get('/register', 'AuthController::register');
+
+$routes->post('/register', 'AuthController::registerProcess');
+
+$routes->get('/register-yayasan', 'AuthController::registerYayasan');
+
+$routes->post('/register-yayasan', 'AuthController::registerYayasanProcess');
+
+$routes->get('/logout', 'AuthController::logout');
+
+//DASHBOARD
+$routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
+    $routes->get('dashboard', 'AdminController::index');
+});
+
+$routes->group('yayasan', ['filter' => 'role:yayasan'], function ($routes) {
+    $routes->get('dashboard', 'FoundationController::index');
+});
+
+$routes->group('donatur', ['filter' => 'role:donatur'], function ($routes) {
+    $routes->get('dashboard', 'DonaturController::index');
+});
