@@ -23,15 +23,29 @@ $routes->post('/register-yayasan', 'AuthController::registerYayasanProcess');
 
 $routes->get('/logout', 'AuthController::logout');
 
-//DASHBOARD
+
+// ================
+// ADMIN
+// ================
 $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::index');
 });
 
+// ================
+// yayasan
+// ================
 $routes->group('yayasan', ['filter' => 'role:yayasan'], function ($routes) {
-    $routes->get('dashboard', 'FoundationController::index');
+    $routes->get('lengkapi-profil', 'FoundationController::create');
+    $routes->post('lengkapi-profil', 'FoundationController::store');
+    $routes->get('status', 'FoundationController::status'
+);
 });
 
+
+// ================
+// DONATUR
+// ================
 $routes->group('donatur', ['filter' => 'role:donatur'], function ($routes) {
     $routes->get('dashboard', 'DonaturController::index');
 });
+
