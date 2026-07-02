@@ -365,7 +365,6 @@ padding:12px 30px;
 
         </div>
 
-        <!-- Informasi Akun -->
         <div class="card-box">
 
             <h4 class="fw-bold mb-4">
