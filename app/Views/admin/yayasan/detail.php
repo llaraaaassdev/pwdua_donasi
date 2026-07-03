@@ -132,8 +132,17 @@ border:none;
 
     <div class="logo">
 
-        <i class="fa-solid fa-hand-holding-heart"></i>
+        <?php if(!empty($foundation['logo'])): ?>
+            <img
+            src="<?= base_url('uploads/logo/'.$foundation['logo']) ?>"
+            class="img-fluid rounded"
+            style="max-height:180px;">
 
+            <?php else: ?>
+            <i class="fa-solid fa-building fa-5x text-success"></i>
+            <h5 class="mt-3">  Belum Upload Logo   </h5>
+
+        <?php endif; ?>
         Donasi Transparan
 
     </div>
@@ -178,7 +187,7 @@ border:none;
 
         <li>
 
-            <a href="<?= base_url('admin/campaigns') ?>">
+            <a href="<?= base_url('admin/campaign') ?>">
 
                 <i class="fa-solid fa-bullhorn me-2"></i>
 
@@ -310,7 +319,7 @@ border:none;
 
                     <div class="info-value">
 
-                        -
+                        <?= esc($foundation['nama_yayasan']) ?>
 
                     </div>
 
@@ -326,7 +335,7 @@ border:none;
 
                     <div class="info-value">
 
-                        -
+                        <?= esc($foundation['nama']) ?>
 
                     </div>
 
@@ -341,9 +350,7 @@ border:none;
                     </div>
 
                     <div class="info-value">
-
-                        -
-
+                        <?= esc($foundation['email_yayasan']) ?>
                     </div>
 
                 </div>
@@ -358,7 +365,7 @@ border:none;
 
                     <div class="info-value">
 
-                        -
+                        <?= esc($foundation['telepon']) ?>
 
                     </div>
 
@@ -374,12 +381,93 @@ border:none;
 
                     <div class="info-value">
 
-                        -
+                        <?= esc($foundation['alamat']) ?>
 
                     </div>
 
-                </div>
+                    <div class="col-md-6 mt-4">
 
+                        <div class="info-title">  Status </div>
+                        <div class="info-value">
+
+                        <?php
+                            if($foundation['status']=="pending")
+                            echo "<span class='badge bg-warning'>Pending</span>";
+                            elseif($foundation['status']=="verified")
+                            echo "<span class='badge bg-success'>Verified</span>";
+                            else
+                            echo "<span class='badge bg-danger'>Rejected</span>";
+                        ?>
+
+                        </div>
+                        </div>
+                </div>
+                <div class="col-md-6 mt-4">
+
+                    <div class="info-title"> Dokumen Legalitas </div>
+                    <div class="info-value">
+
+                    <?php if(!empty($foundation['dokumen_verifikasi'])): ?>
+
+                    <a
+                    href="<?= base_url('uploads/dokumen/'.$foundation['dokumen_verifikasi']) ?>"
+                    target="_blank"
+                    class="btn btn-secondary">
+
+                    <i class="fa-solid fa-file-pdf"></i>  Lihat Dokumen </a>
+
+                    <?php else: ?> 
+                    Belum ada dokumen 
+                    <?php endif; ?>
+
+                    </div>
+
+                    </div>
+                        <div class="mt-4 d-flex gap-2">
+
+                        <form action="<?= base_url('admin/yayasan/approve/'.$foundation['id']) ?>" method="post">
+
+                        <?= csrf_field(); ?>
+
+                        <button class="btn btn-success">
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Approve
+
+                        </button>
+
+                        </form>
+
+                        <form action="<?= base_url('admin/yayasan/reject/'.$foundation['id']) ?>" method="post">
+
+                        <?= csrf_field(); ?>
+
+                        <button class="btn btn-danger">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Reject
+
+                        </button>
+
+                        </form>
+
+                        <a href="<?= base_url('admin/yayasan') ?>"
+                        class="btn btn-secondary">
+
+                        Kembali
+
+                        </a>
+                        <a href="<?= base_url('admin/yayasan/delete/'.$foundation['id']) ?>"
+                        class="btn btn-outline-danger"
+                        onclick="return confirm('Yakin ingin menghapus yayasan ini?')">
+
+                            Delete
+
+                        </a>
+
+                        </div>
             </div>
 
         </div>

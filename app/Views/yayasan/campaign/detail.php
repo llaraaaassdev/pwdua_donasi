@@ -253,195 +253,154 @@ border:none;
 
 </div>
 
-<!-- Content -->
+
 <div class="content">
 
-    <div class="navbar-custom">
+<div class="navbar-custom">
 
-        <div>
+<div>
 
-            <h4 class="fw-bold mb-0">
+<h4 class="fw-bold mb-0">
 
-                Dashboard Yayasan
+Detail Campaign
 
-            </h4>
+</h4>
 
-            <small class="text-muted">
+<small class="text-muted">
 
-                Kelola campaign dan pantau perkembangan donasi.
+Informasi campaign donasi
 
-            </small>
-
-        </div>
-
-        <div class="d-flex align-items-center">
-
-            <i class="fa-solid fa-circle-user fa-2x text-success"></i>
-
-            <span class="ms-2 fw-semibold">
-
-                <?= esc(session()->get('nama') ?? 'Yayasan'); ?>
-
-            </span>
-
-        </div>
-
-    </div>
-
-    <div class="dashboard">
-        <div class="row">
-
-    <!-- Total Campaign -->
-    <div class="col-lg-3 col-md-6 mb-4">
-
-        <div class="card card-stat">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <small class="text-muted">
-
-                        Total Campaign
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2">
-
-                        <?= $totalCampaign ?>
-
-                    </h2>
-
-                </div>
-
-                <div class="icon-box green">
-
-                    <i class="fa-solid fa-bullhorn"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Campaign Aktif -->
-    <div class="col-lg-3 col-md-6 mb-4">
-
-        <div class="card card-stat">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <small class="text-muted">
-
-                        Campaign Aktif
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2">
-
-                        <?= $campaignAktif ?>
-
-                    </h2>
-
-                </div>
-
-                <div class="icon-box blue">
-
-                    <i class="fa-solid fa-circle-check"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Total Donasi -->
-    <div class="col-lg-3 col-md-6 mb-4">
-
-        <div class="card card-stat">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <small class="text-muted">
-
-                        Total Donasi
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2">
-
-                        Rp <?= number_format($totalDana,0,',','.') ?>
-
-                    </h2>
-
-                </div>
-
-                <div class="icon-box orange">
-
-                    <i class="fa-solid fa-wallet"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Total Donatur -->
-    <div class="col-lg-3 col-md-6 mb-4">
-
-        <div class="card card-stat">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <small class="text-muted">
-
-                        Total Donatur
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2">
-
-                        <?= $totalDonatur ?>
-
-                    </h2>
-
-                </div>
-
-                <div class="icon-box red">
-
-                    <i class="fa-solid fa-users"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+</small>
 
 </div>
-<div class="mt-5 text-center text-muted">
 
-    <hr>
+<div>
 
-    <p class="mb-0">
+<i class="fa-solid fa-circle-user fa-2x text-success"></i>
 
-        © <?= date('Y'); ?> Donasi Transparan |
-        Sistem Informasi Donasi Berbasis Web
+<span class="ms-2 fw-semibold">
 
-    </p>
+<?= esc(session()->get('nama') ?? 'Donatur'); ?>
+
+</span>
+
+</div>
+
+</div>
+
+<div class="dashboard">
+    <div class="card-box">
+
+<h3 class="fw-bold">
+
+<p><?= esc($campaign['judul']) ?></p>
+
+</h3>
+
+<p class="text-muted">
+
+<?= esc($campaign['deskripsi']) ?>
+
+</p>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-4">
+
+<p><strong>Kategori</strong></p>
+
+<p><?= esc($campaign['slug']) ?></p>
+
+</div>
+<div class="col-md-4">
+
+<p><strong>Target Dana</strong></p>
+
+<p>Rp <?= number_format($campaign['target_dana'],0,',','.') ?></p>
+
+</div>
+
+<div class="col-md-4">
+
+<p><strong>Dana Terkumpul</strong></p>
+
+<p>Rp <?= number_format($campaign['dana_terkumpul'],0,',','.') ?></p>
+
+</div>
+
+<div class="col-md-4">
+
+<p><strong>Mulai</strong></p>
+
+<p><?= esc($campaign['tanggal_mulai']) ?></p>
+
+</div>
+<div class="col-md-4">
+
+<p><strong>Selesai</strong></p>
+
+<p><?= esc($campaign['tanggal_berakhir']) ?></p>
+
+</div>
+
+<div class="col-md-4">
+
+<p><strong>Jumlah Donatur</strong></p>
+
+<p><?= esc($campaign['jumlah_donatur']) ?></p>
+
+</div>
+
+
+<?php if(!empty($campaign['gambar'])): ?>
+<div class="col-md-4">
+
+<img
+
+src="<?= base_url('uploads/campaign/'.$campaign['gambar']) ?>"
+
+class="img-fluid rounded"
+
+style="max-width:400px;">
+
+</div>
+
+<?php endif; ?>
+
+</div>
+
+
+
+<div class="mt-4">
+
+<button class="btn btn-success">
+
+Donasi Sekarang
+
+</button>
+
+<a href="<?= base_url('donatur/campaign') ?>" class="btn btn-secondary">
+
+Kembali
+
+</a>
+
+</div>
+
+</div>
+
+<div class="text-center mt-5 text-muted">
+
+<hr>
+
+<p>
+
+© <?= date('Y'); ?> Donasi Transparan |
+Sistem Informasi Donasi Berbasis Web
+
+</p>
 
 </div>
 

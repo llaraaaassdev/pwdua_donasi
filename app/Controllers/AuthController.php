@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\FoundationModel;
 
 class AuthController extends BaseController
 {
@@ -31,14 +32,29 @@ class AuthController extends BaseController
         if (!$user['is_active']) {
             return redirect()->back()->with('error', 'Akun tidak aktif.');
         }
+        $foundationId = null;
+
+if ($user['role'] == 'yayasan') {
+
+    $foundationModel = new FoundationModel();
+
+    $foundation = $foundationModel
+        ->where('user_id', $user['id'])
+        ->first();
+
+    if ($foundation) {
+        $foundationId = $foundation['id'];
+    }
+}
 
         session()->set([
-            'id' => $user['id'],
-            'nama' => $user['nama'],
-            'email' => $user['email'],
-            'role' => $user['role'],
-            'logged_in' => true
-        ]);
+    'id'            => $user['id'],
+    'nama'          => $user['nama'],
+    'email'         => $user['email'],
+    'role'          => $user['role'],
+    'foundation_id' => $foundationId,
+    'logged_in'     => true
+]);
 
         switch ($user['role']) {
             case 'admin':
@@ -48,7 +64,7 @@ class AuthController extends BaseController
                 return redirect()->to('/yayasan/dashboard');
 
             default:
-                return redirect()->to('/dashboard');
+                return redirect()->to('/donatur/dashboard');
         }
     }
     public function register()
