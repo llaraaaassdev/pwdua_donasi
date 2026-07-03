@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detail Campaign | Donasi Transparan</title>
+<title>Pembayaran Donasi | Donasi Transparan</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -107,8 +107,14 @@ background:#16a34a;
 border:none;
 }
 
-.progress{
-height:10px;
+.form-control,
+.form-select{
+height:50px;
+border-radius:12px;
+}
+
+textarea.form-control{
+height:120px;
 }
 
 </style>
@@ -119,49 +125,31 @@ height:10px;
 <div class="sidebar">
 
 <div class="logo">
-
 <i class="fa-solid fa-hand-holding-heart"></i>
-
 Donasi Transparan
-
 </div>
 
 <ul class="menu">
 
-<li>
-<a href="<?= base_url('donatur/dashboard') ?>">
-<i class="fa-solid fa-house me-2"></i>
-Dashboard
-</a>
-</li>
+<li><a href="<?= base_url('donatur/dashboard') ?>">
+<i class="fa-solid fa-house me-2"></i>Dashboard
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/campaign') ?>" class="active">
-<i class="fa-solid fa-bullhorn me-2"></i>
-Campaign
-</a>
-</li>
+<li><a href="<?= base_url('donatur/campaign') ?>" class="active">
+<i class="fa-solid fa-bullhorn me-2"></i>Campaign
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/history') ?>">
-<i class="fa-solid fa-clock-rotate-left me-2"></i>
-Riwayat Donasi
-</a>
-</li>
+<li><a href="<?= base_url('donatur/history') ?>">
+<i class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Donasi
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/profile') ?>">
-<i class="fa-solid fa-user me-2"></i>
-Profil
-</a>
-</li>
+<li><a href="<?= base_url('donatur/profile') ?>">
+<i class="fa-solid fa-user me-2"></i>Profil
+</a></li>
 
-<li>
-<a href="<?= base_url('logout') ?>">
-<i class="fa-solid fa-right-from-bracket me-2"></i>
-Logout
-</a>
-</li>
+<li><a href="<?= base_url('logout') ?>">
+<i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+</a></li>
 
 </ul>
 
@@ -175,13 +163,13 @@ Logout
 
 <h4 class="fw-bold mb-0">
 
-Detail Campaign
+Pembayaran Donasi
 
 </h4>
 
 <small class="text-muted">
 
-Informasi campaign donasi
+Lengkapi data donasi Anda.
 
 </small>
 
@@ -204,80 +192,134 @@ Informasi campaign donasi
 <div class="dashboard">
     <div class="card-box">
 
-<h3 class="fw-bold">
+<h4 class="fw-bold mb-4">
 
-Judul Campaign
+Form Donasi<?= esc($campaign['judul']) ?>
 
-</h3>
+</h4>
 
-<p class="text-muted">
+<form
+method="post"
 
-Deskripsi campaign akan ditampilkan di sini.
+action="<?= base_url('donatur/donation/store') ?>"
 
-</p>
+enctype="multipart/form-data">
 
-<hr>
+<div class="mb-3">
+<input
 
-<div class="row">
+type="hidden"
 
-<div class="col-md-4">
+name="campaign_id"
 
-<p><strong>Target Dana</strong></p>
+value="<?= $campaign['id'] ?>">
 
-<p>Rp0</p>
+<div class="mb-3">
 
-</div>
+<label class="form-label">
 
-<div class="col-md-4">
+Nominal Donasi
 
-<p><strong>Dana Terkumpul</strong></p>
+</label>
 
-<p>Rp0</p>
-
-</div>
-
-<div class="col-md-4">
-
-<p><strong>Sisa Hari</strong></p>
-
-<p>0 Hari</p>
+<input
+type="number"
+name="nominal"
+class="form-control"
+placeholder="Masukkan nominal">
 
 </div>
 
+<div class="mb-3">
+
+<label class="form-label">
+
+Metode Pembayaran
+
+</label>
+
+<select class="form-select" name="metode_pembayaran">
+
+<option>Pilih Metode</option>
+
+<option>Transfer Bank</option>
+
+<option>E-Wallet</option>
+
+<option>QRIS</option>
+
+</select>
+
+</div>
+<div class="mb-3">
+
+<label>Bukti Pembayaran</label>
+
+<input
+type="file"
+name="bukti_pembayaran"
+class="form-control"
+accept="image/*,.pdf">
+
+<small class="text-muted">
+
+Format JPG, PNG atau PDF.
+
+</small>
+
+</div>
+<div class="mb-4">
+
+<label class="form-label">
+
+Pesan / Doa
+
+</label>
+
+<textarea name="pesan"
+class="form-control"
+placeholder="Tulis pesan..."></textarea>
+
+</div>
+<div class="form-check mb-3">
+
+<input
+
+type="checkbox"
+
+name="anonim"
+
+value="1"
+
+class="form-check-input">
+
+<label class="form-check-label">
+
+Sembunyikan Nama Saya
+
+</label>
+
 </div>
 
-<div class="progress mt-3">
+<div class="d-flex justify-content-end">
 
-<div class="progress-bar bg-success" style="width:0%">
-
-</div>
-
-</div>
-
-<p class="mt-2 text-muted">
-
-0% Tercapai
-
-</p>
-
-<div class="mt-4">
-
-<button class="btn btn-success">
-
-Donasi Sekarang
-
-</button>
-
-<a href="<?= base_url('donatur/campaign') ?>" class="btn btn-secondary">
+<a href="<?= base_url('donatur/campaign/index') ?>" class="btn btn-secondary me-2">
 
 Kembali
 
 </a>
 
-</div>
+<button type="submit" class="btn btn-success">
+
+Lanjut Pembayaran
+
+</button>
 
 </div>
 
+</form>
+
+</div>
 <div class="text-center mt-5 text-muted">
 
 <hr>
