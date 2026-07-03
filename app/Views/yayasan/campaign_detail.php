@@ -11,7 +11,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
@@ -102,13 +102,13 @@ box-shadow:0 5px 20px rgba(0,0,0,.08);
 margin-bottom:25px;
 }
 
+.progress{
+height:10px;
+}
+
 .btn-success{
 background:#16a34a;
 border:none;
-}
-
-.progress{
-height:10px;
 }
 
 </style>
@@ -128,40 +128,33 @@ Donasi Transparan
 
 <ul class="menu">
 
-<li>
-<a href="<?= base_url('donatur/dashboard') ?>">
-<i class="fa-solid fa-house me-2"></i>
-Dashboard
-</a>
-</li>
+<li><a href="<?= base_url('yayasan/dashboard') ?>">
+<i class="fa-solid fa-house me-2"></i>Dashboard
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/campaign') ?>" class="active">
-<i class="fa-solid fa-bullhorn me-2"></i>
-Campaign
-</a>
-</li>
+<li><a href="<?= base_url('yayasan/campaign') ?>" class="active">
+<i class="fa-solid fa-bullhorn me-2"></i>Campaign Saya
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/history') ?>">
-<i class="fa-solid fa-clock-rotate-left me-2"></i>
-Riwayat Donasi
-</a>
-</li>
+<li><a href="<?= base_url('yayasan/campaign/create') ?>">
+<i class="fa-solid fa-circle-plus me-2"></i>Buat Campaign
+</a></li>
 
-<li>
-<a href="<?= base_url('donatur/profile') ?>">
-<i class="fa-solid fa-user me-2"></i>
-Profil
-</a>
-</li>
+<li><a href="<?= base_url('yayasan/reports') ?>">
+<i class="fa-solid fa-chart-column me-2"></i>Laporan
+</a></li>
 
-<li>
-<a href="<?= base_url('logout') ?>">
-<i class="fa-solid fa-right-from-bracket me-2"></i>
-Logout
-</a>
-</li>
+<li><a href="<?= base_url('yayasan/status') ?>">
+<i class="fa-solid fa-circle-check me-2"></i>Status Verifikasi
+</a></li>
+
+<li><a href="<?= base_url('yayasan/profile') ?>">
+<i class="fa-solid fa-user me-2"></i>Profil
+</a></li>
+
+<li><a href="<?= base_url('logout') ?>">
+<i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+</a></li>
 
 </ul>
 
@@ -181,7 +174,7 @@ Detail Campaign
 
 <small class="text-muted">
 
-Informasi campaign donasi
+Informasi lengkap campaign.
 
 </small>
 
@@ -193,7 +186,7 @@ Informasi campaign donasi
 
 <span class="ms-2 fw-semibold">
 
-<?= esc(session()->get('nama') ?? 'Donatur'); ?>
+<?= esc(session()->get('nama') ?? 'Yayasan'); ?>
 
 </span>
 
@@ -220,33 +213,49 @@ Deskripsi campaign akan ditampilkan di sini.
 
 <div class="row">
 
-<div class="col-md-4">
+<div class="col-md-3">
 
-<p><strong>Target Dana</strong></p>
+<strong>Target Donasi</strong>
 
-<p>Rp0</p>
-
-</div>
-
-<div class="col-md-4">
-
-<p><strong>Dana Terkumpul</strong></p>
-
-<p>Rp0</p>
+<p class="mt-2">Rp0</p>
 
 </div>
 
-<div class="col-md-4">
+<div class="col-md-3">
 
-<p><strong>Sisa Hari</strong></p>
+<strong>Dana Terkumpul</strong>
 
-<p>0 Hari</p>
+<p class="mt-2">Rp0</p>
+
+</div>
+
+<div class="col-md-3">
+
+<strong>Total Donatur</strong>
+
+<p class="mt-2">0</p>
+
+</div>
+
+<div class="col-md-3">
+
+<strong>Status</strong>
+
+<p class="mt-2">
+
+<span class="badge bg-secondary">
+
+Belum Aktif
+
+</span>
+
+</p>
 
 </div>
 
 </div>
 
-<div class="progress mt-3">
+<div class="progress mt-4">
 
 <div class="progress-bar bg-success" style="width:0%">
 
@@ -256,19 +265,19 @@ Deskripsi campaign akan ditampilkan di sini.
 
 <p class="mt-2 text-muted">
 
-0% Tercapai
+0% dari target donasi
 
 </p>
 
 <div class="mt-4">
 
-<button class="btn btn-success">
+<a href="<?= base_url('yayasan/campaign/edit') ?>" class="btn btn-success">
 
-Donasi Sekarang
+Edit Campaign
 
-</button>
+</a>
 
-<a href="<?= base_url('donatur/campaign') ?>" class="btn btn-secondary">
+<a href="<?= base_url('yayasan/campaign') ?>" class="btn btn-secondary">
 
 Kembali
 
