@@ -6,7 +6,27 @@
 # | Admin   | [admin@donasi.com](mailto:admin@donasi.com)     | admin123   |
 # | Yayasan | [yayasan@donasi.com](mailto:yayasan@donasi.com) | yayasan123 |
 # | Donatur | [donatur@donasi.com](mailto:donatur@donasi.com) | donatur123 | -->
+<!-- 
+cd C:\cloudflared
+.\cloudflared.exe tunnel --url http://localhost:8080
+4811 1111 1111 1114
+01/30
+123 -->
 
+<!-- Primary : #6366F1
+Purple : #7C3AED
+Orange : #F59E0B
+Danger : #EF4444
+
+Background : #F4F7FC
+
+Sidebar : #1F2937
+
+Card : #FFFFFF
+
+Text : #111827
+
+Border : #E5E7EB -->
 ## What is CodeIgniter?
 
 CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.

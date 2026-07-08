@@ -1,415 +1,183 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->extend('yayasan/layouts/main') ?>
+<?= $this->section('content') ?>
+<link rel="stylesheet" href="<?= base_url('assets/css/yayasan_campaign.css') ?>">
+<div class="campaign-page">
+    <!-- HEADER -->
+    <div class="page-header mb-4">
+        <div>
+            <h2 class="page-title">
+                Detail Campaign
+            </h2>
+            <p class="page-subtitle">
+                Informasi lengkap campaign yayasan.
+            </p>
+        </div>
+        <a href="<?= base_url('yayasan/campaign/index') ?>"
+           class="btn btn-light">
+            <i class="fa-solid fa-arrow-left"></i>
+            Kembali
+        </a>
+    </div>
+    <div class="row g-4">
+        <!-- KONTEN UTAMA -->
+        <div class="col-lg-8">
+            <div class="campaign-detail-card">
 
-<head>
+                <!-- STATUS -->
+                <?php
+                $statusVerifikasi = $campaign['status_verifikasi'] ?? 'pending';
+                if($statusVerifikasi == 'approved'){
+                    $badgeClass = 'success';
+                    $badgeText = 'Aktif';
+                    $infoStatus = 'Campaign sudah disetujui Admin dan dapat menerima donasi.';
+                }elseif($statusVerifikasi == 'rejected'){
+                    $badgeClass = 'danger';
+                    $badgeText = 'Ditolak';
+                    $infoStatus = 'Campaign ditolak oleh Admin.';
+                }else{
+                    $badgeClass = 'secondary';
+                    $badgeText = 'Menunggu Verifikasi';
+                    $infoStatus = 'Campaign sedang menunggu persetujuan Admin.';
+                }
+                ?>
+                <span class="badge bg-<?= $badgeClass ?> mb-3">
+                    <?= $badgeText ?>
+                </span>
+                <p class="text-muted">
+                    <?= $infoStatus ?></p>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <!-- GALLERY -->
+                <?php if(!empty($campaignImages)): ?>
+                <div id="campaignGallery"
+                     class="carousel slide mb-4"
+                     data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <?php foreach($campaignImages as $key=>$image): ?>
+                        <button
+                        type="button"
+                        data-bs-target="#campaignGallery"
+                        data-bs-slide-to="<?= $key ?>"
+                        class="<?= $key==0?'active':'' ?>">
+                        </button>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="carousel-inner rounded">
+                        <?php foreach($campaignImages as $key=>$image): ?>
+                        <div class="carousel-item <?= $key==0?'active':'' ?>">
+                            <img
+                            src="<?= base_url('uploads/campaign/'.$image['image']) ?>"
+                            class="d-block w-100"
+                            style="height:420px;object-fit:cover;">
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php if(count($campaignImages)>1): ?>
+                    <button
+                    class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#campaignGallery"
+                    data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button
+                    class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#campaignGallery>
+                    data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                    <?php endif; ?>
+                </div>
+                <?php elseif(!empty($campaign['gambar'])): ?>
+                    <img
+                    src="<?= base_url('uploads/campaign/'.$campaign['gambar']) ?>"
+                    class="img-fluid rounded mb-4"
+                    style="height:420px;width:100%;object-fit:cover;">
+                <?php endif; ?>
+                <h3 class="fw-bold">
+                    <?= esc($campaign['judul']) ?>
+                </h3>
+                <hr>
+                <h5>
+                    Deskripsi Campaign
+                </h5>
+                <p class="text-muted">
+                    <?= nl2br(esc($campaign['deskripsi'])) ?>
+                </p>
+            </div>
+        </div>
 
-<title>Dashboard Yayasan | Donasi Transparan</title>
+        <!-- SIDEBAR INFO -->
+        <div class="col-lg-4">
+            <div class="campaign-detail-card">
+                <h5 class="fw-bold mb-4">
+                    Informasi Campaign
+                </h5>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <div class="mb-4">
+                    <small class="text-muted">
+                        Target Dana
+                    </small>
+                    <h4 class="text-success">
+                        Rp <?= number_format($campaign['target_dana'],0,',','.') ?>
+                    </h4>
+                </div>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+                <div class="mb-4">
+                    <small class="text-muted"> Dana Terkumpul </small>
+                    <h4>
+                        Rp <?= number_format($campaign['dana_terkumpul'],0,',','.') ?>
+                    </h4>
+                </div>
+
+                <div class="mb-4">
+                    <small class="text-muted">Jumlah Donatur  </small>
+                    <h4><?= esc($campaign['jumlah_donatur']) ?> Orang </h4>
+                </div>
+
+                <div class="mb-4">
+                    <small class="text-muted">
+                        Periode Campaign
+                    </small>
+                    <p class="mb-1">
+                        <?= esc($campaign['tanggal_mulai']) ?>
+                    </p>
+                    <p>
+                        s/d <?= esc($campaign['tanggal_berakhir']) ?>
+                    </p>
+                </div>
+
+                <a
+                href="<?= base_url('yayasan/campaign/edit/'.$campaign['id']) ?>"
+                class="btn btn-warning w-100 mb-2">
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Campaign
+                </a>
+                <a
+                href="<?= base_url('yayasan/campaign/index') ?>"
+                class="btn btn-light w-100">
+                    Kembali
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
+.campaign-detail-card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
-
-body{
-background:#f4f7fb;
+.carousel-inner{
+    border-radius:18px;
 }
-
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-width:250px;
-height:100vh;
-background:linear-gradient(180deg,#16a34a,#15803d);
-padding:25px;
-color:white;
-overflow-y:auto;
+.badge{
+    font-size:14px;
+    padding:9px 15px;
+    border-radius:20px;
 }
-
-.logo{
-font-size:26px;
-font-weight:700;
-margin-bottom:40px;
-}
-
-.logo i{
-margin-right:10px;
-}
-
-.menu{
-list-style:none;
-padding:0;
-}
-
-.menu li{
-margin-bottom:10px;
-}
-
-.menu a{
-display:block;
-padding:13px 18px;
-color:white;
-text-decoration:none;
-border-radius:12px;
-transition:.3s;
-}
-
-.menu a:hover{
-background:rgba(255,255,255,.15);
-}
-
-.menu a.active{
-background:white;
-color:#15803d;
-font-weight:600;
-}
-
-.content{
-margin-left:250px;
-}
-
-.navbar-custom{
-height:75px;
-background:white;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 35px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-.dashboard{
-padding:30px;
-}
-
-.card-stat{
-background:white;
-border:none;
-border-radius:20px;
-padding:25px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-transition:.3s;
-}
-
-.card-stat:hover{
-transform:translateY(-5px);
-}
-
-.icon-box{
-width:60px;
-height:60px;
-display:flex;
-justify-content:center;
-align-items:center;
-border-radius:15px;
-font-size:24px;
-color:white;
-}
-
-.green{
-background:#16a34a;
-}
-
-.blue{
-background:#2563eb;
-}
-
-.orange{
-background:#f59e0b;
-}
-
-.red{
-background:#ef4444;
-}
-
-.card-box{
-background:white;
-padding:30px;
-border-radius:20px;
-margin-top:30px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-.btn-success{
-background:#16a34a;
-border:none;
-}
-
 </style>
-
-</head>
-<body>
-
-<!-- Sidebar -->
-<div class="sidebar">
-
-    <div class="logo">
-
-        <i class="fa-solid fa-hand-holding-heart"></i>
-
-        Donasi Transparan
-
-    </div>
-
-    <ul class="menu">
-
-        <li>
-
-            <a href="<?= base_url('yayasan/dashboard') ?>" class="active">
-
-                <i class="fa-solid fa-house me-2"></i>
-
-                Dashboard
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('yayasan/campaign/index') ?>">
-
-                <i class="fa-solid fa-bullhorn me-2"></i>
-
-                Campaign Saya
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('yayasan/campaign/create') ?>">
-
-                <i class="fa-solid fa-circle-plus me-2"></i>
-
-                Buat Campaign
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('yayasan/reports') ?>">
-
-                <i class="fa-solid fa-chart-column me-2"></i>
-
-                Laporan
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('yayasan/status') ?>">
-
-                <i class="fa-solid fa-circle-check me-2"></i>
-
-                Status Verifikasi
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('yayasan/profile') ?>">
-
-                <i class="fa-solid fa-user me-2"></i>
-
-                Profil
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('logout') ?>">
-
-                <i class="fa-solid fa-right-from-bracket me-2"></i>
-
-                Logout
-
-            </a>
-
-        </li>
-
-    </ul>
-
-</div>
-
-
-<div class="content">
-
-<div class="navbar-custom">
-
-<div>
-
-<h4 class="fw-bold mb-0">
-
-Detail Campaign
-
-</h4>
-
-<small class="text-muted">
-
-Informasi campaign donasi
-
-</small>
-
-</div>
-
-<div>
-
-<i class="fa-solid fa-circle-user fa-2x text-success"></i>
-
-<span class="ms-2 fw-semibold">
-
-<?= esc(session()->get('nama') ?? 'Donatur'); ?>
-
-</span>
-
-</div>
-
-</div>
-
-<div class="dashboard">
-    <div class="card-box">
-
-<h3 class="fw-bold">
-
-<p><?= esc($campaign['judul']) ?></p>
-
-</h3>
-
-<p class="text-muted">
-
-<?= esc($campaign['deskripsi']) ?>
-
-</p>
-
-<hr>
-
-<div class="row">
-
-<div class="col-md-4">
-
-<p><strong>Kategori</strong></p>
-
-<p><?= esc($campaign['slug']) ?></p>
-
-</div>
-<div class="col-md-4">
-
-<p><strong>Target Dana</strong></p>
-
-<p>Rp <?= number_format($campaign['target_dana'],0,',','.') ?></p>
-
-</div>
-
-<div class="col-md-4">
-
-<p><strong>Dana Terkumpul</strong></p>
-
-<p>Rp <?= number_format($campaign['dana_terkumpul'],0,',','.') ?></p>
-
-</div>
-
-<div class="col-md-4">
-
-<p><strong>Mulai</strong></p>
-
-<p><?= esc($campaign['tanggal_mulai']) ?></p>
-
-</div>
-<div class="col-md-4">
-
-<p><strong>Selesai</strong></p>
-
-<p><?= esc($campaign['tanggal_berakhir']) ?></p>
-
-</div>
-
-<div class="col-md-4">
-
-<p><strong>Jumlah Donatur</strong></p>
-
-<p><?= esc($campaign['jumlah_donatur']) ?></p>
-
-</div>
-
-
-<?php if(!empty($campaign['gambar'])): ?>
-<div class="col-md-4">
-
-<img
-
-src="<?= base_url('uploads/campaign/'.$campaign['gambar']) ?>"
-
-class="img-fluid rounded"
-
-style="max-width:400px;">
-
-</div>
-
-<?php endif; ?>
-
-</div>
-
-
-
-<div class="mt-4">
-
-<button class="btn btn-success">
-
-Donasi Sekarang
-
-</button>
-
-<a href="<?= base_url('donatur/campaign') ?>" class="btn btn-secondary">
-
-Kembali
-
-</a>
-
-</div>
-
-</div>
-
-<div class="text-center mt-5 text-muted">
-
-<hr>
-
-<p>
-
-© <?= date('Y'); ?> Donasi Transparan |
-Sistem Informasi Donasi Berbasis Web
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+<?= $this->endSection() ?>

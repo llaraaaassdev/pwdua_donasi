@@ -1,451 +1,67 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title><?= $title ?? 'Dashboard Admin' ?> | Donasi Transparan</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-}
-
-
-/* SIDEBAR */
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-
-    width:250px;
-    height:100vh;
-
-    background:linear-gradient(180deg,#16a34a,#15803d);
-
-    color:white;
-
-    padding:25px;
-
-    overflow-y:auto;
-}
-
-
-.logo{
-    font-size:26px;
-    font-weight:700;
-    margin-bottom:40px;
-}
-
-
-.logo i{
-    margin-right:10px;
-}
-
-
-.menu{
-    list-style:none;
-    padding:0;
-}
-
-
-.menu li{
-    margin-bottom:10px;
-}
-
-
-.menu a{
-
-    display:block;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:13px 18px;
-
-    border-radius:12px;
-
-    transition:.3s;
-
-}
-
-
-.menu a:hover{
-
-    background:rgba(255,255,255,.15);
-
-}
-
-
-.menu a.active{
-
-    background:white;
-
-    color:#15803d;
-
-    font-weight:600;
-
-}
-
-
-/* CONTENT */
-
-
-.content{
-
-    margin-left:250px;
-
-}
-
-
-
-.navbar-custom{
-
-    height:75px;
-
-    background:white;
-
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-
-    padding:0 35px;
-
-
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-
-}
-
-
-
-.dashboard{
-
-    padding:30px;
-
-}
-
-
-
-.card-stat{
-
-    background:white;
-
-    border:none;
-
-    border-left:5px solid #16a34a;
-
-    border-radius:20px;
-
-    padding:25px;
-
-
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-
-}
-
-
-
-.content-card,
-
-.card{
-
-    background:white;
-
-    border-radius:20px;
-
-    padding:25px;
-
-
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-
-}
-
-
-
-.icon-box{
-
-    width:60px;
-
-    height:60px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    border-radius:15px;
-
-    color:white;
-
-    font-size:24px;
-
-}
-
-
-
-.green{background:#16a34a;}
-.blue{background:#2563eb;}
-.orange{background:#f59e0b;}
-.red{background:#ef4444;}
-
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc($title ?? 'Donasi Transparan') ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        body { background: #f4f7fb; color: #0f172a; }
+        a, button { cursor: pointer; }
+        .app-wrapper {
+            min-height: 100vh;
+            display: flex;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .main-wrapper {
+            width: calc(100% - 280px);
+            max-width: calc(100% - 280px);
+            margin-left: 280px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: .3s;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .content-wrapper {
+            flex: 1;
+            padding: 28px 34px;
+            min-width: 0;
+            max-width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .card { border: none; border-radius: 26px; padding: 28px; box-shadow: 0 12px 30px rgba(15, 23, 42, .07); }
+        .btn { border-radius: 14px; font-weight: 700; }
+        .form-control, .form-select { border-radius: 14px; min-height: 48px; }
+        img, video, canvas, svg, table { max-width: 100%; }
+        @media(max-width: 992px) {
+            .main-wrapper { width: 100%; max-width: 100%; margin-left: 0; }
+            .content-wrapper { padding: 22px 18px; }
+        }
+    </style>
+    <?= $this->renderSection('styles') ?>
 </head>
-
-
 <body>
-
-
-<!-- SIDEBAR -->
-
-
-<div class="sidebar">
-
-
-<div class="logo">
-
-<i class="fa-solid fa-hand-holding-heart"></i>
-
-Donasi Transparan
-
-</div>
-
-
-<ul class="menu">
-
-
-<li>
-
-<a href="<?= base_url('admin/dashboard') ?>">
-
-<i class="fa-solid fa-house me-2"></i>
-
-Dashboard
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('admin/users') ?>">
-
-<i class="fa-solid fa-users me-2"></i>
-
-Kelola User
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('admin/yayasan') ?>">
-
-<i class="fa-solid fa-building me-2"></i>
-
-Kelola Yayasan
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('admin/campaign') ?>">
-
-<i class="fa-solid fa-bullhorn me-2"></i>
-
-Kelola Campaign
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('admin/donations') ?>">
-
-<i class="fa-solid fa-hand-holding-heart me-2"></i>
-
-Kelola Donasi
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('admin/reports') ?>">
-
-<i class="fa-solid fa-chart-column me-2"></i>
-
-Laporan
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('profile') ?>">
-
-<i class="fa-solid fa-user me-2"></i>
-
-Profil
-
-</a>
-
-</li>
-
-
-
-<li>
-
-<a href="<?= base_url('logout') ?>">
-
-<i class="fa-solid fa-right-from-bracket me-2"></i>
-
-Logout
-
-</a>
-
-</li>
-
-
-</ul>
-
-
-</div>
-
-
-
-
-<!-- CONTENT -->
-
-
-<div class="content">
-
-
-<!-- NAVBAR -->
-
-
-<div class="navbar-custom">
-
-
-<div>
-
-
-<h4 class="fw-bold mb-0">
-
-Dashboard Admin
-
-</h4>
-
-
-<small class="text-muted">
-
-Selamat datang di Sistem Donasi Transparan
-
-</small>
-
-
-</div>
-
-
-
-
-<div class="d-flex align-items-center">
-
-
-<i class="fa-solid fa-circle-user fa-2x text-success"></i>
-
-
-<div class="ms-3">
-
-
-<div class="fw-bold">
-
-<?= esc(session()->get('nama') ?? 'Administrator'); ?>
-
-</div>
-
-
-<small class="text-muted">
-
-Administrator
-
-</small>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-<!-- ISI HALAMAN -->
-
-
-<div class="dashboard">
-
-
-<?= $this->renderSection('content') ?>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    <div class="app-wrapper">
+        <?= $this->include('layouts/sidebar') ?>
+        <div class="main-wrapper">
+            <?= $this->include('layouts/navbar') ?>
+            <main class="content-wrapper">
+                <?= $this->renderSection('content') ?>
+            </main>
+            <?= $this->include('layouts/footer') ?>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?= $this->renderSection('scripts') ?>
 </body>
-
 </html>

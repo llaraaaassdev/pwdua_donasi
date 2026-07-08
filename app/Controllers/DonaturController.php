@@ -7,8 +7,8 @@ use App\Models\DonationModel;
 
 class DonaturController extends BaseController
 {
-    protected $campaignModel;
-    protected $donationModel;
+    protected CampaignModel $campaignModel;
+    protected DonationModel $donationModel;
 
     public function __construct()
     {
@@ -18,162 +18,121 @@ class DonaturController extends BaseController
 
     public function dashboard()
     {
-        return view('donatur/dashboard');
+        return redirect()->to('/')->with('success', 'Halo ' . session()->get('nama') . ', Anda masuk sebagai donatur.');
     }
 
     public function campaign()
-{
-    $campaigns = $this->campaignModel
-        ->where('status', 'aktif')
-        ->where('status_verifikasi', 'approved')
-        ->orderBy('created_at', 'DESC')
-        ->findAll();
-
-    return view('donatur/campaign/index', [
-        'campaigns' => $campaigns
-    ]);
-}
-public function detailCampaign($id)
-{
-    $campaign = $this->campaignModel
-        ->where('id', $id)
-        ->where('status', 'aktif')
-        ->where('status_verifikasi', 'approved')
-        ->first();
-
-    if (!$campaign) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    {
+        return redirect()->to('/#campaign');
     }
 
-    return view('donatur/campaign/detail', [
-        'campaign' => $campaign
-    ]);
-}
-
-public function createDonation($campaignId)
-{
-    $campaign = $this->campaignModel->find($campaignId);
-
-    if(!$campaign){
-
-        throw new \CodeIgniter\Exceptions\PageNotFoundException();
-
+    public function detailCampaign($id)
+    {
+        return redirect()->to('/campaign/' . $id);
     }
 
-    return view('donatur/donation/create',[
+    public function createDonation($campaignId)
+    {
+        $campaign = $this->getActiveCampaign((int) $campaignId);
 
-        'campaign'=>$campaign
+        if (!$campaign) {
+            return redirect()->to('/#campaign')->with('error', 'Campaign tidak ditemukan atau belum aktif.');
+        }
 
-    ]);
-}
-public function storeDonation()
-{
-    $invoice = 'INV-' . time();
-
-    $this->donationModel->save([
-
-        'campaign_id'=>$this->request->getPost('campaign_id'),
-
-        'user_id'=>session()->get('user_id'),
-
-        'invoice'=>$invoice,
-
-        'nominal'=>$this->request->getPost('nominal'),
-
-        'metode_pembayaran'=>$this->request->getPost('metode_pembayaran'),
-
-        'pesan'=>$this->request->getPost('pesan'),
-
-        'anonim'=>$this->request->getPost('anonim') ? 1 : 0,
-
-        'status'=>'pending',
-
-        'tanggal_donasi'=>date('Y-m-d')
-
-    ]);
-
-    $id = $this->donationModel->getInsertID();
-
-return redirect()->to('/donatur/donation/upload/'.$id)
-                 ->with('success','Silakan upload bukti pembayaran.');
-}
-public function uploadBukti($id)
-{
-    $donation = $this->donationModel
-        ->where('id', $id)
-        ->where('user_id', session()->get('user_id'))
-        ->first();
-
-    if (!$donation) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
-
-    return view('donatur/donation/upload', [
-        'donation' => $donation
-    ]);
-}
-public function saveBukti($id)
-{
-    $donation = $this->donationModel
-        ->where('id', $id)
-        ->where('user_id', session()->get('user_id'))
-        ->first();
-
-    if (!$donation) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
-
-    $file = $this->request->getFile('bukti');
-
-    if ($file && $file->isValid() && !$file->hasMoved()) {
-
-        $namaFile = $file->getRandomName();
-
-        $file->move(
-            FCPATH . 'uploads/bukti_pembayaran',
-            $namaFile
-        );
-
-        $this->donationModel->update($id, [
-            'bukti_pembayaran' => $namaFile
+        return view('donatur/donation/create', [
+            'title'    => 'Buat Donasi | DonasiKu',
+            'campaign' => $campaign,
         ]);
     }
 
-    return redirect()->to('/donatur/history')
-                     ->with('success', 'Bukti pembayaran berhasil diupload.');
-}
-public function history()
-{
-    $userId = session()->get('user_id'); // sesuaikan dengan session login
+    public function storeDonation()
+    {
+        $campaignId = (int) $this->request->getPost('campaign_id');
+        $campaign = $this->getActiveCampaign($campaignId);
 
-    $donations = $this->donationModel
-        ->select('donations.*, campaigns.judul')
-        ->join('campaigns', 'campaigns.id = donations.campaign_id')
-        ->where('donations.user_id', $userId)
-        ->orderBy('donations.created_at', 'DESC')
-        ->findAll();
+        if (!$campaign) {
+            return redirect()->to('/#campaign')->with('error', 'Campaign tidak ditemukan atau belum aktif.');
+        }
 
-    return view('donatur/history/index', [
-        'donations' => $donations
-    ]);
-}
-public function detailHistory($id)
-{
-    $userId = session()->get('user_id');
+        $nominal = (int) preg_replace('/[^0-9]/', '', (string) $this->request->getPost('nominal'));
 
-    $donation = $this->donationModel
-        ->select('donations.*, campaigns.judul')
-        ->join('campaigns', 'campaigns.id = donations.campaign_id')
-        ->where('donations.id', $id)
-        ->where('donations.user_id', $userId)
-        ->first();
+        if ($nominal < 1000) {
+            return redirect()->back()->withInput()->with('error', 'Nominal donasi minimal Rp 1.000.');
+        }
 
-    if (!$donation) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        $invoice = 'INV-' . date('YmdHis') . '-' . random_int(100, 999);
+
+        $this->donationModel->insert([
+            'campaign_id'        => $campaignId,
+            'user_id'            => (int) session()->get('id'),
+            'invoice'            => $invoice,
+            'nominal'            => $nominal,
+            'gross_amount'       => $nominal,
+            'metode_pembayaran'  => 'midtrans',
+            'payment_type'       => null,
+            'pesan'              => trim((string) $this->request->getPost('pesan')),
+            'anonim'             => $this->request->getPost('anonim') ? 1 : 0,
+            'status'             => 'pending',
+            'transaction_status' => 'pending',
+            'tanggal_donasi'     => date('Y-m-d H:i:s'),
+        ]);
+
+        $donationId = $this->donationModel->getInsertID();
+
+        return redirect()->to('/payment/checkout/' . $donationId)
+            ->with('success', 'Donasi berhasil dibuat. Silakan lanjutkan pembayaran melalui Midtrans.');
     }
 
-    return view('donatur/history/detail', [
-        'donation' => $donation
-    ]);
-}
+    public function history()
+    {
+        $userId = (int) session()->get('id');
+        $stats = $this->donationModel->getDonorStats($userId);
+        $donations = $this->donationModel->getDonorHistory($userId, 10);
+
+        return view('donatur/history/index', [
+            'title'     => 'Riwayat Donasi | DonasiKu',
+            'donations' => $donations,
+            'stats'     => $stats,
+            'pager'     => $this->donationModel->pager,
+        ]);
+    }
+
+    public function detailHistory($id)
+    {
+        $userId = (int) session()->get('id');
+        $donation = $this->donationModel->getDonorDonationDetail((int) $id, $userId);
+
+        if (!$donation) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('donatur/history/detail', [
+            'title'    => 'Detail Donasi | DonasiKu',
+            'donation' => $donation,
+        ]);
+    }
+
+    public function uploadBukti($id)
+    {
+        return redirect()->to('/donatur/history/' . $id)
+            ->with('error', 'Pembayaran menggunakan Midtrans, jadi bukti pembayaran tidak perlu diupload manual.');
+    }
+
+    public function saveBukti($id)
+    {
+        return redirect()->to('/donatur/history/' . $id)
+            ->with('error', 'Pembayaran menggunakan Midtrans, jadi bukti pembayaran tidak perlu diupload manual.');
+    }
+
+    private function getActiveCampaign(int $campaignId): ?array
+    {
+        return $this->campaignModel
+            ->select('campaigns.*, foundations.nama_yayasan, categories.nama_kategori')
+            ->join('foundations', 'foundations.id = campaigns.foundation_id', 'left')
+            ->join('categories', 'categories.id = campaigns.category_id', 'left')
+            ->where('campaigns.id', $campaignId)
+            ->where('campaigns.status', 'aktif')
+            ->where('campaigns.status_verifikasi', 'approved')
+            ->first();
+    }
 }

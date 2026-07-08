@@ -28,9 +28,10 @@
             background-size:cover;
             background-position:center;
             display:flex;
+            flex-direction:column;
             align-items:center;
-            justify-content:center;
-            padding:20px;
+            justify-content:flex-start;
+            padding:28px 20px;
         }
 
         .container-login{
@@ -176,7 +177,164 @@
             color:#2563eb;
         }
 
+
+
+        :root{
+            --donasiku-primary:#3157f6;
+            --donasiku-secondary:#5b3df5;
+            --donasiku-navy:#1d2b44;
+            --donasiku-soft:#f6f8ff;
+        }
+
+        html, body, button, a, input, textarea, select{
+            cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233157f6'/%3E%3Cpath d='M32 47s-17-9.6-17-22.2C15 17.7 20.7 14 25.8 14c3 0 5.2 1.5 6.2 3.2C33 15.5 35.2 14 38.2 14 43.3 14 49 17.7 49 24.8 49 37.4 32 47 32 47z' fill='white'/%3E%3Cpath d='M20 51h24' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") 5 5, auto;
+        }
+
+        .auth-topbar{
+            width:100%;
+            max-width:1200px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            padding:14px 18px;
+            margin-bottom:20px;
+            border-radius:24px;
+            background:rgba(255,255,255,.78);
+            border:1px solid rgba(255,255,255,.78);
+            box-shadow:0 14px 35px rgba(15,23,42,.10);
+            backdrop-filter:blur(14px);
+        }
+
+        .auth-brand-home{
+            display:inline-flex;
+            align-items:center;
+            gap:12px;
+            text-decoration:none;
+            color:var(--donasiku-navy);
+            min-width:0;
+        }
+
+        .auth-brand-home .brand-icon{
+            width:46px;
+            height:46px;
+            flex:0 0 46px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:16px;
+            color:white;
+            background:linear-gradient(135deg,var(--donasiku-primary),var(--donasiku-secondary));
+            box-shadow:0 10px 24px rgba(49,87,246,.24);
+            font-size:22px;
+        }
+
+        .auth-brand-home strong{
+            display:block;
+            font-size:20px;
+            font-weight:900;
+            line-height:1.1;
+        }
+
+        .auth-brand-home small{
+            display:block;
+            color:#64748b;
+            font-weight:700;
+            margin-top:3px;
+        }
+
+        .auth-top-actions{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .auth-link-home,
+        .auth-link-secondary{
+            display:inline-flex;
+            align-items:center;
+            gap:9px;
+            padding:11px 16px;
+            border-radius:999px;
+            text-decoration:none;
+            font-weight:900;
+            transition:.25s ease;
+            white-space:nowrap;
+        }
+
+        .auth-link-home{
+            background:linear-gradient(135deg,var(--donasiku-primary),var(--donasiku-secondary));
+            color:white;
+            box-shadow:0 12px 28px rgba(49,87,246,.22);
+        }
+
+        .auth-link-secondary{
+            background:white;
+            color:var(--donasiku-primary);
+            border:1px solid rgba(49,87,246,.16);
+        }
+
+        .auth-link-home:hover,
+        .auth-link-secondary:hover{
+            transform:translateY(-2px);
+            color:white;
+            background:linear-gradient(135deg,var(--donasiku-primary),var(--donasiku-secondary));
+        }
+
+        .auth-home-inline{
+            margin-top:14px;
+            text-align:center;
+        }
+
+        .auth-home-inline a{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:10px 14px;
+            border-radius:999px;
+            background:rgba(49,87,246,.10);
+            color:var(--donasiku-primary);
+            text-decoration:none;
+            font-weight:800;
+        }
+
+        .auth-home-inline a:hover{
+            background:linear-gradient(135deg,var(--donasiku-primary),var(--donasiku-secondary));
+            color:white;
+        }
+
         @media(max-width:992px){
+
+            .auth-topbar{
+                padding:12px;
+                border-radius:20px;
+                margin-bottom:14px;
+            }
+
+            .auth-brand-home .brand-icon{
+                width:40px;
+                height:40px;
+                flex-basis:40px;
+                border-radius:14px;
+            }
+
+            .auth-brand-home strong{
+                font-size:17px;
+            }
+
+            .auth-brand-home small{
+                font-size:12px;
+            }
+
+            .auth-top-actions{
+                gap:8px;
+            }
+
+            .auth-link-home,
+            .auth-link-secondary{
+                padding:10px 12px;
+                font-size:13px;
+            }
 
             .container-login{
                 grid-template-columns:1fr;
@@ -188,9 +346,41 @@
 
         }
 
+
+        @media(max-width:576px){
+            .auth-topbar{
+                align-items:flex-start;
+                flex-direction:column;
+            }
+
+            .auth-top-actions{
+                width:100%;
+            }
+
+            .auth-link-home,
+            .auth-link-secondary{
+                flex:1;
+                justify-content:center;
+            }
+        }
     </style>
 </head>
 <body>
+
+<header class="auth-topbar">
+    <a href="<?= base_url('/') ?>" class="auth-brand-home">
+        <span class="brand-icon"><i class="fa-solid fa-hand-holding-heart"></i></span>
+        <span>
+            <strong>DonasiKu</strong>
+            <small>Kembali ke halaman utama</small>
+        </span>
+    </a>
+    <div class="auth-top-actions">
+        <a href="<?= base_url('/') ?>" class="auth-link-home"><i class="fa-solid fa-house"></i> Beranda</a>
+        <a href="<?= base_url('register') ?>" class="auth-link-secondary"><i class="fa-solid fa-user-plus"></i> Daftar</a>
+    </div>
+</header>
+
 
 <div class="container-login">
 

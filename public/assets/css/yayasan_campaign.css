@@ -1,0 +1,455 @@
+/* ===================================================
+   CAMPAIGN PAGE
+=================================================== */
+
+.campaign-page{
+    animation:fadeIn .4s ease;
+}
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.page-title{
+    font-size:30px;
+    font-weight:700;
+    color:#202124;
+    margin:0;
+}
+
+.page-subtitle{
+    color:#7b8190;
+    margin-top:8px;
+}
+
+.btn-create{
+    background:#5b6cff;
+    border:none;
+    border-radius:12px;
+    padding:12px 22px;
+    font-weight:600;
+    box-shadow:0 12px 30px rgba(91,108,255,.25);
+    transition:.3s;
+}
+
+.btn-create:hover{
+    transform:translateY(-3px);
+}
+
+/* ===================================================
+   STAT CARD
+=================================================== */
+
+.stat-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+    transition:.3s;
+
+    height:100%;
+}
+
+.stat-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.stat-card small{
+
+    display:block;
+
+    color:#8b94a7;
+
+    margin-bottom:12px;
+
+    font-size:14px;
+
+}
+
+.stat-card h2{
+
+    margin:0;
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.stat-card.success{
+
+    border-left:5px solid #22c55e;
+
+}
+
+.stat-card.warning{
+
+    border-left:5px solid #f59e0b;
+
+}
+
+.stat-card.danger{
+
+    border-left:5px solid #ef4444;
+
+}
+
+/* ===================================================
+   SEARCH
+=================================================== */
+
+.toolbar{
+
+    background:#fff;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.04);
+
+}
+
+.toolbar input{
+
+    border-radius:12px;
+
+    height:50px;
+
+    border:1px solid #ddd;
+
+}
+
+.toolbar input:focus{
+
+    box-shadow:none;
+
+    border-color:#5b6cff;
+
+}
+
+/* ===================================================
+   CAMPAIGN CARD
+=================================================== */
+
+.campaign-card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    transition:.35s;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.06);
+
+    height:100%;
+
+}
+
+.campaign-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 25px 45px rgba(0,0,0,.12);
+
+}
+
+.campaign-image{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+}
+
+.campaign-body{
+
+    padding:22px;
+
+}
+
+.campaign-body h4{
+
+    margin-top:15px;
+
+    font-size:21px;
+
+    font-weight:700;
+
+    color:#222;
+
+}
+
+.campaign-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+.campaign-popup-box {
+    width: 360px;
+    max-width: 90%;
+    background: #fff;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
+}
+
+.campaign-popup-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.campaign-popup-icon.success {
+    background: #22c55e;
+}
+
+.campaign-popup-icon.error {
+    background: #ef4444;
+}
+
+.campaign-popup-box h4 {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.campaign-popup-box p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.campaign-popup-box button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 10px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+/* ===================================================
+   PROGRESS
+=================================================== */
+
+.progress{
+
+    height:10px;
+
+    background:#edf2f7;
+
+    border-radius:50px;
+
+}
+
+.progress-bar{
+
+    background:linear-gradient(90deg,#5b6cff,#7c3aed);
+
+    border-radius:50px;
+
+}
+
+/* ===================================================
+   MONEY
+=================================================== */
+
+.campaign-money{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.campaign-money strong{
+
+    font-size:23px;
+
+    color:#202124;
+
+}
+
+.campaign-money small{
+
+    color:#8b94a7;
+
+}
+
+/* ===================================================
+   BUTTON
+=================================================== */
+
+.campaign-action{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.campaign-action .btn{
+
+    flex:1;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.campaign-action .btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ===================================================
+   EMPTY
+=================================================== */
+
+.empty-state{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:80px 30px;
+
+    text-align:center;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.05);
+
+}
+
+.empty-state i{
+
+    font-size:70px;
+
+    color:#5b6cff;
+
+    margin-bottom:25px;
+
+}
+
+.empty-state h4{
+
+    font-weight:700;
+
+}
+
+.empty-state p{
+
+    color:#7b8190;
+
+}
+
+/* ===================================================
+   BADGE
+=================================================== */
+
+.badge{
+
+    padding:8px 14px;
+
+    border-radius:50px;
+
+    font-weight:600;
+
+}
+
+/* ===================================================
+   ANIMATION
+=================================================== */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+
+@media(max-width:992px){
+
+.page-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.page-title{
+
+font-size:25px;
+
+}
+
+.campaign-image{
+
+height:190px;
+
+}
+
+.campaign-action{
+
+flex-direction:column;
+
+}
+
+.stat-card h2{
+
+font-size:23px;
+
+}
+
+}

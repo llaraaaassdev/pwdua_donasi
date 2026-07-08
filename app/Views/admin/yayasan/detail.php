@@ -1,501 +1,569 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->extend('layouts/main') ?>
 
-<head>
+<?= $this->section('content') ?>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php
+$status = $foundation['status'] ?? 'pending';
+$pendingProfileChange = $pendingProfileChange ?? null;
+$hasPendingChange = !empty($pendingProfileChange);
+$activeCampaignCount = (int) ($activeCampaignCount ?? 0);
+$donationCount = (int) ($donationCount ?? 0);
+$canDisableAccount = $activeCampaignCount === 0 && $donationCount === 0;
+$canApproveVerification = $status !== 'verified' || $hasPendingChange;
+$canRejectVerification = (($status !== 'verified' && $status !== 'rejected') || $hasPendingChange);
 
-<title>Detail Yayasan | Donasi Transparan</title>
+$statusClass = 'pending';
+$statusIcon = 'fa-clock';
+$statusText = 'Pending';
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+if ($status === 'verified') {
+    $statusClass = 'verified';
+    $statusIcon = 'fa-circle-check';
+    $statusText = 'Verified';
+} elseif ($status === 'rejected') {
+    $statusClass = 'rejected';
+    $statusIcon = 'fa-circle-xmark';
+    $statusText = 'Rejected';
+}
+?>
 
 <style>
+    .detail-page {
+        animation: fadeUp .6s ease;
+    }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
+    .detail-hero {
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        border-radius: 28px;
+        padding: 32px;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 28px;
+        box-shadow: 0 18px 35px rgba(37, 99, 235, .22);
+    }
 
-body{
-background:#f4f7fb;
-}
+    .detail-hero::before {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.16);
+        right: -80px;
+        top: -100px;
+        animation: floatBlob 5s ease-in-out infinite;
+    }
 
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-width:250px;
-height:100vh;
-background:linear-gradient(180deg,#16a34a,#15803d);
-padding:25px;
-color:white;
-overflow-y:auto;
-}
+    .detail-hero-content {
+        position: relative;
+        z-index: 2;
+    }
 
-.logo{
-font-size:26px;
-font-weight:700;
-margin-bottom:40px;
-}
+    .detail-hero h2 {
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
 
-.logo i{
-margin-right:10px;
-}
+    .detail-hero p {
+        margin-bottom: 0;
+        color: rgba(255,255,255,.84);
+    }
 
-.menu{
-list-style:none;
-padding:0;
-}
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 24px;
+    }
 
-.menu li{
-margin-bottom:10px;
-}
+    .modern-card {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 28px;
+        border: 1px solid #eef2f7;
+        box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+    }
 
-.menu a{
-display:block;
-padding:13px 18px;
-text-decoration:none;
-color:white;
-border-radius:12px;
-transition:.3s;
-}
+    .logo-preview {
+        min-height: 280px;
+        border-radius: 24px;
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: 22px;
+    }
 
-.menu a:hover{
-background:rgba(255,255,255,.15);
-}
+    .logo-preview img {
+        max-width: 100%;
+        max-height: 240px;
+        object-fit: contain;
+    }
 
-.menu a.active{
-background:white;
-color:#15803d;
-font-weight:600;
-}
+    .logo-empty {
+        text-align: center;
+        color: #64748b;
+    }
 
-.content{
-margin-left:250px;
-}
+    .logo-empty i {
+        width: 86px;
+        height: 86px;
+        border-radius: 26px;
+        background: rgba(37, 99, 235, .12);
+        color: #2563eb;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        margin-bottom: 14px;
+    }
 
-.navbar-custom{
-height:75px;
-background:white;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 35px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 13px;
+    }
 
-.dashboard{
-padding:30px;
-}
+    .status-badge.pending {
+        background: rgba(245, 158, 11, .14);
+        color: #b45309;
+    }
 
-.card-box{
-background:white;
-padding:30px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-margin-bottom:25px;
-}
+    .status-badge.verified {
+        background: rgba(22, 163, 74, .14);
+        color: #15803d;
+    }
 
-.info-title{
-font-weight:600;
-color:#6b7280;
-margin-bottom:5px;
-}
+    .status-badge.rejected {
+        background: rgba(239, 68, 68, .14);
+        color: #dc2626;
+    }
 
-.info-value{
-font-size:16px;
-font-weight:500;
-}
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
 
-.btn-success{
-background:#16a34a;
-border:none;
-}
+    .info-item {
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        border-radius: 20px;
+        padding: 18px;
+    }
 
-.btn-secondary{
-border:none;
-}
+    .info-title {
+        color: #64748b;
+        font-weight: 700;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
 
+    .info-value {
+        color: #0f172a;
+        font-weight: 800;
+        word-break: break-word;
+    }
+
+    .info-wide {
+        grid-column: 1 / -1;
+    }
+
+    .section-title {
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: rgba(37, 99, 235, .12);
+        color: #2563eb;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+
+    .pending-change-panel {
+        margin-top: 24px;
+        padding: 22px;
+        border-radius: 24px;
+        background: rgba(245, 158, 11, .10);
+        border: 1px solid rgba(245, 158, 11, .24);
+    }
+
+    .pending-change-panel h5 {
+        color: #78350f;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .pending-change-panel p {
+        color: #92400e;
+        margin-bottom: 18px;
+    }
+
+    .compare-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .compare-item {
+        background: #ffffff;
+        border: 1px solid #fde68a;
+        border-radius: 18px;
+        padding: 15px;
+    }
+
+    .compare-title {
+        color: #92400e;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 7px;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+    }
+
+    .compare-value {
+        color: #0f172a;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    @media(max-width: 992px) {
+        .compare-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .active-campaign-note {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(239, 68, 68, .10);
+        border: 1px solid rgba(239, 68, 68, .18);
+        color: #b91c1c;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .btn-modern {
+        min-height: 46px;
+        border-radius: 15px;
+        font-weight: 800;
+        padding: 10px 16px;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(to right, #2563eb, #4f46e5);
+        color: #ffffff;
+        border: none;
+    }
+
+    .btn-gradient:hover {
+        color: #ffffff;
+        opacity: .92;
+        transform: translateY(-2px);
+    }
+
+    .btn-disabled-modern,
+    .btn-disabled-modern:hover {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 1px solid #e2e8f0;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes floatBlob {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(22px);
+        }
+    }
+
+    @media(max-width: 992px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
-</head>
-<body>
+<div class="detail-page">
 
-<!-- Sidebar -->
-<div class="sidebar">
-
-    <div class="logo">
-
-        <?php if(!empty($foundation['logo'])): ?>
-            <img
-            src="<?= base_url('uploads/logo/'.$foundation['logo']) ?>"
-            class="img-fluid rounded"
-            style="max-height:180px;">
-
-            <?php else: ?>
-            <i class="fa-solid fa-building fa-5x text-success"></i>
-            <h5 class="mt-3">  Belum Upload Logo   </h5>
-
-        <?php endif; ?>
-        Donasi Transparan
-
+    <div class="detail-hero">
+        <div class="detail-hero-content">
+            <h2>Detail Yayasan</h2>
+            <p>Periksa data yayasan, dokumen legalitas, serta pengajuan perubahan profil sebelum mengambil keputusan.</p>
+        </div>
     </div>
 
-    <ul class="menu">
+    <?php if(empty($foundation)): ?>
 
-        <li>
-
-            <a href="<?= base_url('admin/dashboard') ?>">
-
-                <i class="fa-solid fa-house me-2"></i>
-
-                Dashboard
-
+        <div class="modern-card text-center">
+            <h5 class="fw-bold">Data yayasan tidak ditemukan.</h5>
+            <a href="<?= base_url('admin/yayasan') ?>" class="btn btn-gradient btn-modern mt-3">
+                Kembali
             </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('admin/users') ?>">
-
-                <i class="fa-solid fa-users me-2"></i>
-
-                Kelola User
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('admin/yayasan') ?>" class="active">
-
-                <i class="fa-solid fa-building me-2"></i>
-
-                Kelola Yayasan
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('admin/campaign') ?>">
-
-                <i class="fa-solid fa-bullhorn me-2"></i>
-
-                Kelola Campaign
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('admin/donations') ?>">
-
-                <i class="fa-solid fa-hand-holding-heart me-2"></i>
-
-                Kelola Donasi
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('admin/reports') ?>">
-
-                <i class="fa-solid fa-chart-column me-2"></i>
-
-                Laporan
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('profile') ?>">
-
-                <i class="fa-solid fa-user me-2"></i>
-
-                Profil
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="<?= base_url('logout') ?>">
-
-                <i class="fa-solid fa-right-from-bracket me-2"></i>
-
-                Logout
-
-            </a>
-
-        </li>
-
-    </ul>
-
-</div>
-
-<!-- Content -->
-<div class="content">
-
-    <div class="navbar-custom">
-
-        <div>
-
-            <h4 class="fw-bold mb-0">
-
-                Detail Yayasan
-
-            </h4>
-
-            <small class="text-muted">
-
-                Informasi lengkap yayasan
-
-            </small>
-
         </div>
 
-        <div class="d-flex align-items-center">
+    <?php else: ?>
 
-            <i class="fa-solid fa-circle-user fa-2x text-success"></i>
+        <div class="detail-grid">
 
-            <span class="ms-2 fw-semibold">
+            <div class="modern-card">
+                <div class="logo-preview">
+                    <?php if(!empty($foundation['logo'])): ?>
+                        <img src="<?= base_url('uploads/logo/'.$foundation['logo']) ?>" alt="Logo Yayasan">
+                    <?php else: ?>
+                        <div class="logo-empty">
+                            <i class="fa-solid fa-building"></i>
+                            <h6 class="fw-bold mb-0">Belum Upload Logo</h6>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
-                <?= esc(session()->get('nama') ?? 'Administrator'); ?>
+                <h4 class="fw-bold mb-2">
+                    <?= esc($foundation['nama_yayasan']) ?>
+                </h4>
 
-            </span>
+                <div class="mb-3 text-muted">
+                    <?= esc($foundation['email_yayasan']) ?>
+                </div>
 
-        </div>
+                <span class="status-badge <?= $statusClass ?>">
+                    <i class="fa-solid <?= $statusIcon ?>"></i>
+                    <?= $statusText ?>
+                </span>
 
-    </div>
+                <?php if($hasPendingChange): ?>
+                    <div class="mt-3">
+                        <span class="status-badge pending">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            Perubahan Profil Pending
+                        </span>
+                    </div>
+                <?php endif; ?>
 
-    <div class="dashboard">
-        <div class="card-box">
-
-    <div class="row">
-
-        <div class="col-md-3 text-center">
-
-            <div class="border rounded-4 p-4">
-
-                <i class="fa-solid fa-building fa-5x text-success"></i>
-
-                <h5 class="mt-3">
-
-                    Logo Yayasan
-
-                </h5>
-
+                <?php if($activeCampaignCount > 0 || $donationCount > 0): ?>
+                    <div class="active-campaign-note">
+                        <i class="fa-solid fa-lock me-1"></i>
+                        Akun tidak bisa di-reject atau dinonaktifkan karena masih memiliki
+                        <?= $activeCampaignCount ?> campaign aktif/disetujui dan <?= $donationCount ?> data donasi.
+                    </div>
+                <?php endif; ?>
             </div>
 
-        </div>
-
-        <div class="col-md-9">
-
-            <div class="row">
-
-                <div class="col-md-6 mb-4">
-
-                    <div class="info-title">
-
-                        Nama Yayasan
-
-                    </div>
-
-                    <div class="info-value">
-
-                        <?= esc($foundation['nama_yayasan']) ?>
-
-                    </div>
-
+            <div class="modern-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Informasi Yayasan</span>
                 </div>
 
-                <div class="col-md-6 mb-4">
-
-                    <div class="info-title">
-
-                        Penanggung Jawab
-
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-title">Nama Yayasan</div>
+                        <div class="info-value"><?= esc($foundation['nama_yayasan']) ?></div>
                     </div>
 
-                    <div class="info-value">
-
-                        <?= esc($foundation['nama']) ?>
-
+                    <div class="info-item">
+                        <div class="info-title">Penanggung Jawab</div>
+                        <div class="info-value"><?= esc($foundation['nama'] ?? '-') ?></div>
                     </div>
 
-                </div>
-
-                <div class="col-md-6 mb-4">
-
-                    <div class="info-title">
-
-                        Email
-
+                    <div class="info-item">
+                        <div class="info-title">Email Yayasan</div>
+                        <div class="info-value"><?= esc($foundation['email_yayasan']) ?></div>
                     </div>
 
-                    <div class="info-value">
-                        <?= esc($foundation['email_yayasan']) ?>
+                    <div class="info-item">
+                        <div class="info-title">Nomor Telepon</div>
+                        <div class="info-value"><?= esc($foundation['telepon']) ?></div>
                     </div>
 
-                </div>
-
-                <div class="col-md-6 mb-4">
-
-                    <div class="info-title">
-
-                        Nomor Telepon
-
+                    <div class="info-item">
+                        <div class="info-title">Nomor Izin</div>
+                        <div class="info-value"><?= esc($foundation['nomor_izin']) ?></div>
                     </div>
 
-                    <div class="info-value">
-
-                        <?= esc($foundation['telepon']) ?>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-12">
-
-                    <div class="info-title">
-
-                        Alamat
-
-                    </div>
-
-                    <div class="info-value">
-
-                        <?= esc($foundation['alamat']) ?>
-
-                    </div>
-
-                    <div class="col-md-6 mt-4">
-
-                        <div class="info-title">  Status </div>
+                    <div class="info-item">
+                        <div class="info-title">Tanggal Daftar</div>
                         <div class="info-value">
-
-                        <?php
-                            if($foundation['status']=="pending")
-                            echo "<span class='badge bg-warning'>Pending</span>";
-                            elseif($foundation['status']=="verified")
-                            echo "<span class='badge bg-success'>Verified</span>";
-                            else
-                            echo "<span class='badge bg-danger'>Rejected</span>";
-                        ?>
-
+                            <?= !empty($foundation['created_at']) ? date('d M Y H:i', strtotime($foundation['created_at'])) : '-' ?>
                         </div>
+                    </div>
+
+                    <div class="info-item info-wide">
+                        <div class="info-title">Alamat</div>
+                        <div class="info-value"><?= esc($foundation['alamat']) ?></div>
+                    </div>
+
+                    <div class="info-item info-wide">
+                        <div class="info-title">Deskripsi</div>
+                        <div class="info-value">
+                            <?= !empty($foundation['deskripsi']) ? esc($foundation['deskripsi']) : '-' ?>
                         </div>
+                    </div>
+
+                    <div class="info-item info-wide">
+                        <div class="info-title">Dokumen Legalitas</div>
+                        <div class="info-value">
+                            <?php if(!empty($foundation['dokumen_verifikasi'])): ?>
+                                <?php
+                                $dokumenFile = $foundation['dokumen_verifikasi'];
+                                $dokumenUrl = base_url('uploads/dokumen/'.$dokumenFile);
+
+                                if (!file_exists(FCPATH . 'uploads/dokumen/' . $dokumenFile) && file_exists(FCPATH . 'uploads/legalitas/' . $dokumenFile)) {
+                                    $dokumenUrl = base_url('uploads/legalitas/'.$dokumenFile);
+                                }
+                                ?>
+                                <a
+                                    href="<?= $dokumenUrl ?>"
+                                    target="_blank"
+                                    class="btn btn-outline-danger btn-modern">
+                                    <i class="fa-solid fa-file-pdf me-1"></i>
+                                    Lihat Dokumen
+                                </a>
+                            <?php else: ?>
+                                Belum ada dokumen
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 mt-4">
 
-                    <div class="info-title"> Dokumen Legalitas </div>
-                    <div class="info-value">
 
-                    <?php if(!empty($foundation['dokumen_verifikasi'])): ?>
+                <?php if($hasPendingChange): ?>
+                    <div class="pending-change-panel">
+                        <h5><i class="fa-solid fa-clock-rotate-left me-1"></i> Pengajuan Perubahan Profil</h5>
+                        <p>Data berikut adalah perubahan yang diajukan yayasan. Jika disetujui, data ini akan menggantikan profil aktif.</p>
 
-                    <a
-                    href="<?= base_url('uploads/dokumen/'.$foundation['dokumen_verifikasi']) ?>"
-                    target="_blank"
-                    class="btn btn-secondary">
+                        <div class="compare-grid">
+                            <?php foreach([
+                                'nama_yayasan' => 'Nama Yayasan',
+                                'email_yayasan' => 'Email Yayasan',
+                                'telepon' => 'Nomor Telepon',
+                                'nomor_izin' => 'Nomor Izin',
+                                'alamat' => 'Alamat',
+                                'deskripsi' => 'Deskripsi'
+                            ] as $field => $label): ?>
+                                <div class="compare-item">
+                                    <div class="compare-title"><?= esc($label) ?></div>
+                                    <div class="compare-value"><?= esc($pendingProfileChange[$field] ?? '-') ?></div>
+                                </div>
+                            <?php endforeach; ?>
 
-                    <i class="fa-solid fa-file-pdf"></i>  Lihat Dokumen </a>
+                            <div class="compare-item">
+                                <div class="compare-title">Logo Baru</div>
+                                <div class="compare-value">
+                                    <?php if(!empty($pendingProfileChange['logo'])): ?>
+                                        <a href="<?= base_url('uploads/logo/'.$pendingProfileChange['logo']) ?>" target="_blank">Lihat Logo</a>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </div>
+                            </div>
 
-                    <?php else: ?> 
-                    Belum ada dokumen 
+                            <div class="compare-item">
+                                <div class="compare-title">Dokumen Legalitas Baru</div>
+                                <div class="compare-value">
+                                    <?php if(!empty($pendingProfileChange['dokumen_verifikasi'])): ?>
+                                        <a href="<?= base_url('uploads/dokumen/'.$pendingProfileChange['dokumen_verifikasi']) ?>" target="_blank">Lihat Dokumen</a>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="action-bar">
+                    <a href="<?= base_url('admin/yayasan') ?>" class="btn btn-light btn-modern">
+                        <i class="fa-solid fa-arrow-left me-1"></i>
+                        Kembali
+                    </a>
+
+                    <?php if($canApproveVerification): ?>
+                        <a
+                            href="<?= base_url('admin/yayasan/approve/'.$foundation['id']) ?>"
+                            class="btn btn-success btn-modern"
+                            onclick="return confirm('Setujui pengajuan ini?')">
+                            <i class="fa-solid fa-check me-1"></i>
+                            Approve
+                        </a>
                     <?php endif; ?>
 
-                    </div>
-
-                    </div>
-                        <div class="mt-4 d-flex gap-2">
-
-                        <form action="<?= base_url('admin/yayasan/approve/'.$foundation['id']) ?>" method="post">
-
-                        <?= csrf_field(); ?>
-
-                        <button class="btn btn-success">
-
-                        <i class="fa-solid fa-check"></i>
-
-                        Approve
-
-                        </button>
-
-                        </form>
-
-                        <form action="<?= base_url('admin/yayasan/reject/'.$foundation['id']) ?>" method="post">
-
-                        <?= csrf_field(); ?>
-
-                        <button class="btn btn-danger">
-
-                        <i class="fa-solid fa-xmark"></i>
-
-                        Reject
-
-                        </button>
-
-                        </form>
-
-                        <a href="<?= base_url('admin/yayasan') ?>"
-                        class="btn btn-secondary">
-
-                        Kembali
-
+                    <?php if($canRejectVerification): ?>
+                        <a
+                            href="<?= base_url('admin/yayasan/reject/'.$foundation['id']) ?>"
+                            class="btn btn-warning btn-modern"
+                            onclick="return confirm('Tolak pengajuan ini?')">
+                            <i class="fa-solid fa-xmark me-1"></i>
+                            Reject
                         </a>
-                        <a href="<?= base_url('admin/yayasan/delete/'.$foundation['id']) ?>"
-                        class="btn btn-outline-danger"
-                        onclick="return confirm('Yakin ingin menghapus yayasan ini?')">
+                    <?php endif; ?>
 
-                            Delete
-
+                    <?php if($canDisableAccount): ?>
+                        <a
+                            href="<?= base_url('admin/yayasan/delete/'.$foundation['id']) ?>"
+                            class="btn btn-outline-danger btn-modern"
+                            onclick="return confirm('Nonaktifkan akun yayasan ini?')">
+                            <i class="fa-solid fa-trash me-1"></i>
+                            Nonaktifkan
                         </a>
-
-                        </div>
+                    <?php else: ?>
+                        <button type="button" class="btn btn-disabled-modern btn-modern" disabled title="Masih ada campaign aktif atau data donasi">
+                            <i class="fa-solid fa-lock me-1"></i>
+                            Tidak Bisa Nonaktifkan
+                        </button>
+                    <?php endif; ?>
+                </div>
             </div>
 
         </div>
 
-    </div>
-
-</div>
-<!-- Footer -->
-
-<div class="mt-5 text-center text-muted">
-
-    <hr>
-
-    <p class="mb-0">
-
-        © <?= date('Y'); ?> Donasi Transparan |
-        Sistem Informasi Donasi Berbasis Web
-
-    </p>
+    <?php endif; ?>
 
 </div>
 
-</div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+<?= $this->endSection() ?>
